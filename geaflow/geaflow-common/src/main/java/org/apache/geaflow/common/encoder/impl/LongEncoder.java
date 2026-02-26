@@ -27,31 +27,37 @@ public class LongEncoder extends AbstractEncoder<Long> {
 
     public static final LongEncoder INSTANCE = new LongEncoder();
 
+    // VarInt encoding constants
+    private static final int VARINT_MASK = 0x7F;
+    private static final int VARINT_CONTINUE_FLAG = 0x80;
+    private static final int VARINT_SHIFT = 7;
+    private static final int DIRECT_WRITE_THRESHOLD = 128;
+
     @Override
     public void encode(Long data, OutputStream outputStream) throws IOException {
         // if between 0 ~ 127, just write the byte
-        if (data >= 0 && data < 128) {
+        if (data >= 0 && data < DIRECT_WRITE_THRESHOLD) {
             outputStream.write(data.intValue());
             return;
         }
 
         // write var long, takes 1 ~ 9 byte
         long value = data;
-        int varInt = (int) (value & 0x7F);
-        value >>>= 7;
+        int varInt = (int) (value & VARINT_MASK);
+        value >>>= VARINT_SHIFT;
 
-        varInt |= 0x80;
-        varInt |= ((value & 0x7F) << 8);
-        value >>>= 7;
+        varInt |= VARINT_CONTINUE_FLAG;
+        varInt |= ((value & VARINT_MASK) << 8);
+        value >>>= VARINT_SHIFT;
         if (value == 0) {
             outputStream.write(varInt);
             outputStream.write(varInt >> 8);
             return;
         }
 
-        varInt |= (0x80 << 8);
-        varInt |= ((value & 0x7F) << 16);
-        value >>>= 7;
+        varInt |= (VARINT_CONTINUE_FLAG << 8);
+        varInt |= ((value & VARINT_MASK) << 16);
+        value >>>= VARINT_SHIFT;
         if (value == 0) {
             outputStream.write(varInt);
             outputStream.write(varInt >> 8);
@@ -59,9 +65,9 @@ public class LongEncoder extends AbstractEncoder<Long> {
             return;
         }
 
-        varInt |= (0x80 << 16);
-        varInt |= ((value & 0x7F) << 24);
-        value >>>= 7;
+        varInt |= (VARINT_CONTINUE_FLAG << 16);
+        varInt |= ((value & VARINT_MASK) << 24);
+        value >>>= VARINT_SHIFT;
         if (value == 0) {
             outputStream.write(varInt);
             outputStream.write(varInt >> 8);
@@ -70,10 +76,10 @@ public class LongEncoder extends AbstractEncoder<Long> {
             return;
         }
 
-        varInt |= (0x80 << 24);
+        varInt |= (VARINT_CONTINUE_FLAG << 24);
         long varLong = (varInt & 0xFFFFFFFFL);
-        varLong |= (((value & 0x7F)) << 32);
-        value >>>= 7;
+        varLong |= (((value & VARINT_MASK)) << 32);
+        value >>>= VARINT_SHIFT;
         if (value == 0) {
             outputStream.write((int) varLong);
             outputStream.write((int) (varLong >> 8));
@@ -83,9 +89,9 @@ public class LongEncoder extends AbstractEncoder<Long> {
             return;
         }
 
-        varLong |= (0x80L << 32);
-        varLong |= (((value & 0x7F)) << 40);
-        value >>>= 7;
+        varLong |= ((long) VARINT_CONTINUE_FLAG << 32);
+        varLong |= (((value & VARINT_MASK)) << 40);
+        value >>>= VARINT_SHIFT;
         if (value == 0) {
             outputStream.write((int) varLong);
             outputStream.write((int) (varLong >> 8));
@@ -96,9 +102,9 @@ public class LongEncoder extends AbstractEncoder<Long> {
             return;
         }
 
-        varLong |= (0x80L << 40);
-        varLong |= (((value & 0x7F)) << 48);
-        value >>>= 7;
+        varLong |= ((long) VARINT_CONTINUE_FLAG << 40);
+        varLong |= (((value & VARINT_MASK)) << 48);
+        value >>>= VARINT_SHIFT;
         if (value == 0) {
             outputStream.write((int) varLong);
             outputStream.write((int) (varLong >> 8));
@@ -110,9 +116,9 @@ public class LongEncoder extends AbstractEncoder<Long> {
             return;
         }
 
-        varLong |= (0x80L << 48);
-        varLong |= (((value & 0x7F)) << 56);
-        value >>>= 7;
+        varLong |= ((long) VARINT_CONTINUE_FLAG << 48);
+        varLong |= (((value & VARINT_MASK)) << 56);
+        value >>>= VARINT_SHIFT;
         if (value == 0) {
             outputStream.write((int) varLong);
             outputStream.write((int) (varLong >> 8));
@@ -125,7 +131,7 @@ public class LongEncoder extends AbstractEncoder<Long> {
             return;
         }
 
-        varLong |= (0x80L << 56);
+        varLong |= ((long) VARINT_CONTINUE_FLAG << 56);
         outputStream.write((int) varLong);
         outputStream.write((int) (varLong >> 8));
         outputStream.write((int) (varLong >> 16));
@@ -140,31 +146,31 @@ public class LongEncoder extends AbstractEncoder<Long> {
     @Override
     public Long decode(InputStream inputStream) throws IOException {
         int b = inputStream.read();
-        long result = b & 0x7F;
-        if ((b & 0x80) != 0) {
+        long result = b & VARINT_MASK;
+        if ((b & VARINT_CONTINUE_FLAG) != 0) {
             b = inputStream.read();
-            result |= (b & 0x7F) << 7;
-            if ((b & 0x80) != 0) {
+            result |= (long) (b & VARINT_MASK) << VARINT_SHIFT;
+            if ((b & VARINT_CONTINUE_FLAG) != 0) {
                 b = inputStream.read();
-                result |= (b & 0x7F) << 14;
-                if ((b & 0x80) != 0) {
+                result |= (long) (b & VARINT_MASK) << (VARINT_SHIFT * 2);
+                if ((b & VARINT_CONTINUE_FLAG) != 0) {
                     b = inputStream.read();
-                    result |= (b & 0x7F) << 21;
-                    if ((b & 0x80) != 0) {
+                    result |= (long) (b & VARINT_MASK) << (VARINT_SHIFT * 3);
+                    if ((b & VARINT_CONTINUE_FLAG) != 0) {
                         b = inputStream.read();
-                        result |= (long) (b & 0x7F) << 28;
-                        if ((b & 0x80) != 0) {
+                        result |= (long) (b & VARINT_MASK) << (VARINT_SHIFT * 4);
+                        if ((b & VARINT_CONTINUE_FLAG) != 0) {
                             b = inputStream.read();
-                            result |= (long) (b & 0x7F) << 35;
-                            if ((b & 0x80) != 0) {
+                            result |= (long) (b & VARINT_MASK) << (VARINT_SHIFT * 5);
+                            if ((b & VARINT_CONTINUE_FLAG) != 0) {
                                 b = inputStream.read();
-                                result |= (long) (b & 0x7F) << 42;
-                                if ((b & 0x80) != 0) {
+                                result |= (long) (b & VARINT_MASK) << (VARINT_SHIFT * 6);
+                                if ((b & VARINT_CONTINUE_FLAG) != 0) {
                                     b = inputStream.read();
-                                    result |= (long) (b & 0x7F) << 49;
-                                    if ((b & 0x80) != 0) {
+                                    result |= (long) (b & VARINT_MASK) << (VARINT_SHIFT * 7);
+                                    if ((b & VARINT_CONTINUE_FLAG) != 0) {
                                         b = inputStream.read();
-                                        result |= (long) b << 56;
+                                        result |= (long) b << (VARINT_SHIFT * 8);
                                     }
                                 }
                             }

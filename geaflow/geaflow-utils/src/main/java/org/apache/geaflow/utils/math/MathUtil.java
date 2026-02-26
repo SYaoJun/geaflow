@@ -34,6 +34,30 @@ public class MathUtil {
 
     public static final int MAXIMUM_CAPACITY = 1 << 30;
 
+    // MurmurHash constants
+    private static final int MURMURHASH_C1 = 0xcc9e2d51;
+    private static final int MURMURHASH_C2 = 0x1b873593;
+    private static final int MURMURHASH_C3 = 0xe6546b64;
+    private static final int MURMURHASH_ROTATE1 = 15;
+    private static final int MURMURHASH_ROTATE2 = 13;
+    private static final int MURMURHASH_MULTIPLIER = 5;
+
+    // Bit mixing constants
+    private static final int BIT_MIX_CONST1 = 0x85ebca6b;
+    private static final int BIT_MIX_CONST2 = 0xc2b2ae35;
+    private static final int BIT_MIX_SHIFT1 = 16;
+    private static final int BIT_MIX_SHIFT2 = 13;
+
+    // Long to int bit mixing constants
+    private static final long LONG_BIT_MIX_CONST1 = 0xbf58476d1ce4e5b9L;
+    private static final long LONG_BIT_MIX_CONST2 = 0x94d049bb133111ebL;
+    private static final int LONG_BIT_MIX_SHIFT1 = 30;
+    private static final int LONG_BIT_MIX_SHIFT2 = 27;
+    private static final int LONG_BIT_MIX_SHIFT3 = 31;
+
+    // Power of two constants
+    private static final int MAX_POWER_OF_TWO = 0x40000000;
+
     private MathUtil() {
     }
 
@@ -119,12 +143,12 @@ public class MathUtil {
      * @return The non-negative hash code for the integer.
      */
     public static int murmurHash(int code) {
-        code *= 0xcc9e2d51;
-        code = Integer.rotateLeft(code, 15);
-        code *= 0x1b873593;
+        code *= MURMURHASH_C1;
+        code = Integer.rotateLeft(code, MURMURHASH_ROTATE1);
+        code *= MURMURHASH_C2;
 
-        code = Integer.rotateLeft(code, 13);
-        code = code * 5 + 0xe6546b64;
+        code = Integer.rotateLeft(code, MURMURHASH_ROTATE2);
+        code = code * MURMURHASH_MULTIPLIER + MURMURHASH_C3;
 
         code ^= 4;
         code = bitMix(code);
@@ -235,7 +259,7 @@ public class MathUtil {
      * @return The next power of 2 or the value itself if it is a power of 2
      */
     public static int findNextPositivePowerOfTwo(final int value) {
-        assert value > Integer.MIN_VALUE && value < 0x40000000;
+        assert value > Integer.MIN_VALUE && value < MAX_POWER_OF_TWO;
         return 1 << (32 - Integer.numberOfLeadingZeros(value - 1));
     }
 
@@ -253,7 +277,7 @@ public class MathUtil {
      *      </ul>
      */
     public static int safeFindNextPositivePowerOfTwo(final int value) {
-        return value <= 0 ? 1 : value >= 0x40000000 ? 0x40000000 : findNextPositivePowerOfTwo(value);
+        return value <= 0 ? 1 : value >= MAX_POWER_OF_TWO ? MAX_POWER_OF_TWO : findNextPositivePowerOfTwo(value);
     }
 
     public static boolean isPrime(int n) {
@@ -282,9 +306,9 @@ public class MathUtil {
      * @return the bit-mixed int (32-bit) output
      */
     public static int longToIntWithBitMixing(long in) {
-        in = (in ^ (in >>> 30)) * 0xbf58476d1ce4e5b9L;
-        in = (in ^ (in >>> 27)) * 0x94d049bb133111ebL;
-        in = in ^ (in >>> 31);
+        in = (in ^ (in >>> LONG_BIT_MIX_SHIFT1)) * LONG_BIT_MIX_CONST1;
+        in = (in ^ (in >>> LONG_BIT_MIX_SHIFT2)) * LONG_BIT_MIX_CONST2;
+        in = in ^ (in >>> LONG_BIT_MIX_SHIFT3);
         return (int) in;
     }
 
@@ -298,11 +322,11 @@ public class MathUtil {
      * @return the bit-mixed output value
      */
     public static int bitMix(int in) {
-        in ^= in >>> 16;
-        in *= 0x85ebca6b;
-        in ^= in >>> 13;
-        in *= 0xc2b2ae35;
-        in ^= in >>> 16;
+        in ^= in >>> BIT_MIX_SHIFT1;
+        in *= BIT_MIX_CONST1;
+        in ^= in >>> BIT_MIX_SHIFT2;
+        in *= BIT_MIX_CONST2;
+        in ^= in >>> BIT_MIX_SHIFT1;
         return in;
     }
 
