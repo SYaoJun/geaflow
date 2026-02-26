@@ -19,7 +19,7 @@
 
 package org.apache.geaflow.cluster.master;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.DEFAULT_MASTER_ID;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DEFAULT_MASTER_ID;
 
 import org.apache.geaflow.cluster.clustermanager.ClusterContext;
 import org.apache.geaflow.cluster.clustermanager.IClusterManager;
@@ -34,7 +34,7 @@ public class MasterContext extends ReliableContainerContext {
     private ClusterContext clusterContext;
 
     public MasterContext(Configuration configuration) {
-        super(DEFAULT_MASTER_ID, ClusterConstants.getMasterName(), configuration);
+        super(configuration.getInteger(DEFAULT_MASTER_ID), ClusterConstants.getMasterName(configuration), configuration);
         this.configuration = configuration;
     }
 

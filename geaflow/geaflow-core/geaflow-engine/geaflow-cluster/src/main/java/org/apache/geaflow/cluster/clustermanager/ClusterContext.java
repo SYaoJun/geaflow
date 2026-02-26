@@ -19,8 +19,7 @@
 
 package org.apache.geaflow.cluster.clustermanager;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.DEFAULT_MASTER_ID;
-import static org.apache.geaflow.cluster.constants.ClusterConstants.getMasterName;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DEFAULT_MASTER_ID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.geaflow.cluster.common.IReliableContext;
 import org.apache.geaflow.cluster.common.ReliableContainerContext;
 import org.apache.geaflow.cluster.config.ClusterConfig;
+import org.apache.geaflow.cluster.constants.ClusterConstants;
 import org.apache.geaflow.cluster.heartbeat.HeartbeatManager;
 import org.apache.geaflow.cluster.system.ClusterMetaStore;
 import org.apache.geaflow.common.config.Configuration;
@@ -48,7 +48,7 @@ public class ClusterContext extends ReliableContainerContext {
     private int maxComponentId;
 
     public ClusterContext(Configuration configuration) {
-        super(DEFAULT_MASTER_ID, getMasterName(), configuration);
+        super(configuration.getInteger(DEFAULT_MASTER_ID), ClusterConstants.getMasterName(configuration), configuration);
         this.config = configuration;
         this.clusterConfig = ClusterConfig.build(configuration);
         this.callbacks = new ArrayList<>();

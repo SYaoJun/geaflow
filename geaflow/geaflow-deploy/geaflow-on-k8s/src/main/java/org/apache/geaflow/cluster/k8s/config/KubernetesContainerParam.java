@@ -19,8 +19,8 @@
 
 package org.apache.geaflow.cluster.k8s.config;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.CONTAINER_LOG_SUFFIX;
 import static org.apache.geaflow.cluster.k8s.config.K8SConstants.JOB_CLASSPATH;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.CONTAINER_LOG_SUFFIX;
 import static org.apache.geaflow.cluster.k8s.config.KubernetesConfigKeys.POD_USER_LABELS;
 
 import java.io.File;
@@ -65,7 +65,7 @@ public class KubernetesContainerParam extends AbstractKubernetesParam {
 
     @Override
     public String getContainerShellCommand() {
-        String logFilename = getLogDir() + File.separator + CONTAINER_LOG_SUFFIX;
+        String logFilename = getLogDir() + File.separator + config.getString(CONTAINER_LOG_SUFFIX);
         return ClusterUtils.getStartCommand(clusterConfig.getContainerJvmOptions(),
             KubernetesContainerRunner.class, logFilename, config, JOB_CLASSPATH);
     }

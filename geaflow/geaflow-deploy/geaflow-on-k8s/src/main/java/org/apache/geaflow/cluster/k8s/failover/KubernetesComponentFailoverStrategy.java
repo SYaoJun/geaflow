@@ -19,9 +19,8 @@
 
 package org.apache.geaflow.cluster.k8s.failover;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.DEFAULT_MASTER_ID;
-
 import org.apache.geaflow.cluster.clustermanager.ClusterContext;
+import org.apache.geaflow.common.config.keys.ExecutionConfigKeys;
 import org.apache.geaflow.cluster.runner.failover.ComponentFailoverStrategy;
 import org.apache.geaflow.common.exception.GeaflowHeartbeatException;
 import org.apache.geaflow.env.IEnvironment.EnvType;
@@ -47,7 +46,7 @@ public class KubernetesComponentFailoverStrategy extends ComponentFailoverStrate
 
     @Override
     public void doFailover(int componentId, Throwable cause) {
-        if (componentId != DEFAULT_MASTER_ID) {
+        if (componentId != clusterContext.getConfig().getInteger(ExecutionConfigKeys.DEFAULT_MASTER_ID)) {
             if (cause instanceof GeaflowHeartbeatException) {
                 String startMessage = String.format("Start component failover for component #%s "
                     + "cause by %s.", componentId, cause.getMessage());

@@ -50,7 +50,7 @@ public class DriverContext extends ReliableContainerContext {
     private int index;
 
     public DriverContext(int id, int index, Configuration config) {
-        super(id, ClusterConstants.getDriverName(id), config);
+        super(id, ClusterConstants.getDriverName(config, id), config);
         this.index = index;
         this.finishedPipelineTasks = new ArrayList<>();
         this.pipelineTaskIds = new ArrayList<>();

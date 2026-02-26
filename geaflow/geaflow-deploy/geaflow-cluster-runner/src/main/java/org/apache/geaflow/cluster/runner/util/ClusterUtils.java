@@ -20,9 +20,9 @@
 package org.apache.geaflow.cluster.runner.util;
 
 import static org.apache.geaflow.cluster.constants.ClusterConstants.CONFIG_FILE_LOG4J_NAME;
-import static org.apache.geaflow.cluster.constants.ClusterConstants.CONTAINER_START_COMMAND_TEMPLATE;
 import static org.apache.geaflow.cluster.constants.ClusterConstants.JOB_CONFIG;
 import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.CONF_DIR;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.CONTAINER_START_COMMAND_TEMPLATE;
 
 import com.google.common.base.Preconditions;
 import java.nio.file.Paths;
@@ -119,7 +119,7 @@ public class ClusterUtils {
         String redirects = needRedirect ? ">> " + logFilename + " 2>&1" : "";
         startCommandValues.put("redirects", redirects);
 
-        return getStartCommand(CONTAINER_START_COMMAND_TEMPLATE, startCommandValues);
+        return getStartCommand(configuration.getString(CONTAINER_START_COMMAND_TEMPLATE), startCommandValues);
     }
 
     public static String getStartCommand(String template, Map<String, String> startCommandValues) {

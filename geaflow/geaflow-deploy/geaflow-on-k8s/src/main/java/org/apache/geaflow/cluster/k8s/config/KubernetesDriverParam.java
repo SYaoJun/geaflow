@@ -19,8 +19,8 @@
 
 package org.apache.geaflow.cluster.k8s.config;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.DRIVER_LOG_SUFFIX;
 import static org.apache.geaflow.cluster.k8s.config.K8SConstants.JOB_CLASSPATH;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DRIVER_LOG_SUFFIX;
 import static org.apache.geaflow.cluster.k8s.config.KubernetesConfigKeys.DRIVER_NODE_PORT;
 import static org.apache.geaflow.cluster.k8s.config.KubernetesConfigKeys.POD_USER_LABELS;
 import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DRIVER_RPC_PORT;
@@ -67,7 +67,7 @@ public class KubernetesDriverParam extends AbstractKubernetesParam {
 
     @Override
     public String getContainerShellCommand() {
-        String logFileName = getLogDir() + File.separator + DRIVER_LOG_SUFFIX;
+        String logFileName = getLogDir() + File.separator + config.getString(DRIVER_LOG_SUFFIX);
         return ClusterUtils.getStartCommand(clusterConfig.getDriverJvmOptions(),
             KubernetesDriverRunner.class, logFileName, config, JOB_CLASSPATH);
     }

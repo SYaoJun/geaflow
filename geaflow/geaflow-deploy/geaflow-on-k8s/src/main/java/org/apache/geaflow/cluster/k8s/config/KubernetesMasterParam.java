@@ -19,8 +19,8 @@
 
 package org.apache.geaflow.cluster.k8s.config;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.MASTER_LOG_SUFFIX;
 import static org.apache.geaflow.cluster.k8s.config.K8SConstants.JOB_CLASSPATH;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.MASTER_LOG_SUFFIX;
 import static org.apache.geaflow.cluster.k8s.config.KubernetesConfigKeys.POD_USER_LABELS;
 import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.MASTER_HTTP_PORT;
 
@@ -79,7 +79,7 @@ public class KubernetesMasterParam extends AbstractKubernetesParam {
 
     @Override
     public String getContainerShellCommand() {
-        String logFilename = getLogDir() + File.separator + MASTER_LOG_SUFFIX;
+        String logFilename = getLogDir() + File.separator + config.getString(MASTER_LOG_SUFFIX);
         return ClusterUtils.getStartCommand(clusterConfig.getMasterJvmOptions(),
             KubernetesMasterRunner.class, logFilename, config, JOB_CLASSPATH);
     }

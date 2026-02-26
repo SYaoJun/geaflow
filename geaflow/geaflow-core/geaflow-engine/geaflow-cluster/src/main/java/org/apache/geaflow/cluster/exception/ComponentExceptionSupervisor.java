@@ -19,8 +19,6 @@
 
 package org.apache.geaflow.cluster.exception;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.EXIT_CODE;
-
 import org.apache.geaflow.cluster.task.runner.AbstractTaskRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +28,7 @@ public class ComponentExceptionSupervisor extends AbstractTaskRunner<ComponentEx
     private static final Logger LOGGER = LoggerFactory.getLogger(ComponentExceptionSupervisor.class);
 
     private static ComponentExceptionSupervisor INSTANCE;
+    private static final int DEFAULT_EXIT_CODE = -1;
 
     @Override
     protected void process(ExceptionElement exceptionElement) {
@@ -42,7 +41,7 @@ public class ComponentExceptionSupervisor extends AbstractTaskRunner<ComponentEx
         if (running) {
             LOGGER.error(String.format("%s occur fatal exception, exit process now",
                 exceptionElement.thread), exceptionElement.cause);
-            System.exit(EXIT_CODE);
+            System.exit(DEFAULT_EXIT_CODE);
         } else {
             LOGGER.info("{} ignore exception because supervisor is shutdown", exceptionElement.thread);
         }

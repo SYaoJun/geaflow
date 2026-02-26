@@ -23,9 +23,9 @@ import static org.apache.geaflow.cluster.constants.ClusterConstants.CONTAINER_ID
 import static org.apache.geaflow.cluster.constants.ClusterConstants.CONTAINER_INDEX;
 import static org.apache.geaflow.cluster.constants.ClusterConstants.ENV_AGENT_PORT;
 import static org.apache.geaflow.cluster.constants.ClusterConstants.ENV_SUPERVISOR_PORT;
-import static org.apache.geaflow.cluster.constants.ClusterConstants.EXIT_CODE;
 import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.AGENT_HTTP_PORT;
 import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DRIVER_RPC_PORT;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.PROCESS_EXIT_CODE;
 import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.SUPERVISOR_RPC_PORT;
 
 import org.apache.geaflow.cluster.constants.ClusterConstants;
@@ -98,7 +98,8 @@ public class DriverRunner {
             if (driverRunner != null) {
                 driverRunner.close();
             }
-            System.exit(EXIT_CODE);
+            Configuration config = ClusterUtils.loadConfiguration();
+            System.exit(config.getInteger(PROCESS_EXIT_CODE));
         }
     }
 

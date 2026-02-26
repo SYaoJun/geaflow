@@ -38,12 +38,12 @@ import org.apache.geaflow.cluster.clustermanager.ContainerExecutorInfo;
 import org.apache.geaflow.cluster.clustermanager.ExecutorRegisterException;
 import org.apache.geaflow.cluster.clustermanager.ExecutorRegisteredCallback;
 import org.apache.geaflow.cluster.clustermanager.IClusterManager;
-import org.apache.geaflow.cluster.constants.ClusterConstants;
 import org.apache.geaflow.cluster.resourcemanager.allocator.IAllocator;
 import org.apache.geaflow.cluster.resourcemanager.allocator.ProcessFairAllocator;
 import org.apache.geaflow.cluster.resourcemanager.allocator.RoundRobinAllocator;
 import org.apache.geaflow.cluster.system.ClusterMetaStore;
 import org.apache.geaflow.cluster.web.metrics.ResourceMetrics;
+import org.apache.geaflow.common.config.Configuration;
 import org.apache.geaflow.common.errorcode.RuntimeErrors;
 import org.apache.geaflow.common.exception.GeaflowRuntimeException;
 import org.apache.geaflow.common.utils.SleepUtils;
@@ -75,6 +75,7 @@ public class DefaultResourceManager implements IResourceManager, ExecutorRegiste
     private final Map<WorkerInfo.WorkerId, WorkerInfo> availableWorkers = new TreeMap<>(
         Comparator.comparing(WorkerInfo.WorkerId::getContainerName).thenComparing(WorkerInfo.WorkerId::getWorkerIndex));
     private final Map<String, ResourceSession> sessions = new HashMap<>();
+    private Configuration config;
 
     public DefaultResourceManager(IClusterManager clusterManager) {
         this.clusterManager = clusterManager;
@@ -86,6 +87,7 @@ public class DefaultResourceManager implements IResourceManager, ExecutorRegiste
         this.allocators.put(IAllocator.AllocateStrategy.ROUND_ROBIN, new RoundRobinAllocator());
         this.allocators.put(IAllocator.AllocateStrategy.PROCESS_FAIR, new ProcessFairAllocator());
         ClusterContext clusterContext = context.getClusterContext();
+        this.config = clusterContext.getConfig();
         clusterContext.addExecutorRegisteredCallback(this);
 
         boolean isRecover = context.isRecover();
@@ -324,7 +326,7 @@ public class DefaultResourceManager implements IResourceManager, ExecutorRegiste
             LOGGER.info("recover worker over, available/used : {}/{}", this.availableWorkers.size(),
                 usedWorkerNum);
         }
-        clusterManager.doFailover(ClusterConstants.DEFAULT_MASTER_ID, null);
+        clusterManager.doFailover(config.getInteger(org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DEFAULT_MASTER_ID), null);
     }
 
     private void waitForInit() {

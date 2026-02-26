@@ -19,7 +19,7 @@
 
 package org.apache.geaflow.cluster.k8s.entrypoint;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.EXIT_CODE;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.PROCESS_EXIT_CODE;
 
 import java.util.Map;
 import org.apache.geaflow.cluster.driver.Driver;
@@ -90,7 +90,7 @@ public class KubernetesDriverRunner {
             kubernetesDriverRunner.waitForTermination();
         } catch (Throwable e) {
             LOGGER.error("FATAL: process exits", e);
-            System.exit(EXIT_CODE);
+            System.exit(config.getInteger(PROCESS_EXIT_CODE));
         }
     }
 

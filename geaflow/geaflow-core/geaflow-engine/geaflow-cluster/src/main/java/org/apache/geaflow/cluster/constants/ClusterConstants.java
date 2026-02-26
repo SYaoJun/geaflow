@@ -19,20 +19,22 @@
 
 package org.apache.geaflow.cluster.constants;
 
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.CONTAINER_LOG_SUFFIX;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.CONTAINER_PREFIX;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.CONTAINER_START_COMMAND_TEMPLATE;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DEFAULT_MASTER_ID;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DRIVER_LOG_SUFFIX;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DRIVER_PREFIX;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.MASTER_LOG_SUFFIX;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.MASTER_PREFIX;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.PROCESS_EXIT_CODE;
+
+import org.apache.geaflow.common.config.Configuration;
+
 public class ClusterConstants {
 
-    private static final String MASTER_PREFIX = "master-";
-    private static final String DRIVER_PREFIX = "driver-";
-    private static final String CONTAINER_PREFIX = "container-";
-
-    public static final String MASTER_LOG_SUFFIX = "master.log";
-    public static final String DRIVER_LOG_SUFFIX = "driver.log";
-    public static final String CONTAINER_LOG_SUFFIX = "container.log";
     public static final String CLUSTER_TYPE = "clusterType";
     public static final String LOCAL_CLUSTER = "LOCAL";
-
-    public static final int DEFAULT_MASTER_ID = 0;
-    public static final int EXIT_CODE = -1;
 
     public static final String ENV_AGENT_PORT = "AGENT_PORT";
     public static final String ENV_SUPERVISOR_PORT = "SUPERVISOR_PORT";
@@ -44,21 +46,39 @@ public class ClusterConstants {
     public static final String IS_RECOVER = "GEAFLOW_IS_RECOVER";
     public static final String JOB_CONFIG = "GEAFLOW_JOB_CONFIG";
     public static final String CONTAINER_START_COMMAND = "CONTAINER_START_COMMAND";
-    public static final String CONTAINER_START_COMMAND_TEMPLATE =
-        "%java% %classpath% %jvmmem% %jvmopts% %logging% %class% %redirects%";
     public static final String AGENT_PROFILER_PATH = "AGENT_PROFILER_PATH";
     public static final String CONFIG_FILE_LOG4J_NAME = "log4j.properties";
 
-    public static String getMasterName() {
-        return String.format("%s%s", MASTER_PREFIX, DEFAULT_MASTER_ID);
+    public static String getMasterName(Configuration config) {
+        return String.format("%s%s", config.getString(MASTER_PREFIX), config.getInteger(DEFAULT_MASTER_ID));
     }
 
-    public static String getDriverName(int id) {
-        return String.format("%s%s", DRIVER_PREFIX, id);
+    public static String getDriverName(Configuration config, int id) {
+        return String.format("%s%s", config.getString(DRIVER_PREFIX), id);
     }
 
-    public static String getContainerName(int id) {
-        return String.format("%s%s", CONTAINER_PREFIX, id);
+    public static String getContainerName(Configuration config, int id) {
+        return String.format("%s%s", config.getString(CONTAINER_PREFIX), id);
+    }
+
+    public static String getMasterLogSuffix(Configuration config) {
+        return config.getString(MASTER_LOG_SUFFIX);
+    }
+
+    public static String getDriverLogSuffix(Configuration config) {
+        return config.getString(DRIVER_LOG_SUFFIX);
+    }
+
+    public static String getContainerLogSuffix(Configuration config) {
+        return config.getString(CONTAINER_LOG_SUFFIX);
+    }
+
+    public static int getExitCode(Configuration config) {
+        return config.getInteger(PROCESS_EXIT_CODE);
+    }
+
+    public static String getContainerStartCommandTemplate(Configuration config) {
+        return config.getString(CONTAINER_START_COMMAND_TEMPLATE);
     }
 
 }

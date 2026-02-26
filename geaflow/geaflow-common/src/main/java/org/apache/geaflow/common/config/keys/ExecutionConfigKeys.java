@@ -638,4 +638,53 @@ public class ExecutionConfigKeys implements Serializable {
         .defaultValue(false)
         .description("if enable detail job metric");
 
+    // ------------------------------------------------------------------------
+    // cluster constants
+    // ------------------------------------------------------------------------
+
+    public static final ConfigKey MASTER_PREFIX = ConfigKeys
+        .key("geaflow.cluster.master.prefix")
+        .defaultValue("master-")
+        .description("prefix for master name");
+
+    public static final ConfigKey DRIVER_PREFIX = ConfigKeys
+        .key("geaflow.cluster.driver.prefix")
+        .defaultValue("driver-")
+        .description("prefix for driver name");
+
+    public static final ConfigKey CONTAINER_PREFIX = ConfigKeys
+        .key("geaflow.cluster.container.prefix")
+        .defaultValue("container-")
+        .description("prefix for container name");
+
+    public static final ConfigKey MASTER_LOG_SUFFIX = ConfigKeys
+        .key("geaflow.cluster.master.log.suffix")
+        .defaultValue("master.log")
+        .description("log file suffix for master");
+
+    public static final ConfigKey DRIVER_LOG_SUFFIX = ConfigKeys
+        .key("geaflow.cluster.driver.log.suffix")
+        .defaultValue("driver.log")
+        .description("log file suffix for driver");
+
+    public static final ConfigKey CONTAINER_LOG_SUFFIX = ConfigKeys
+        .key("geaflow.cluster.container.log.suffix")
+        .defaultValue("container.log")
+        .description("log file suffix for container");
+
+    public static final ConfigKey DEFAULT_MASTER_ID = ConfigKeys
+        .key("geaflow.cluster.master.default.id")
+        .defaultValue(0)
+        .description("default master id");
+
+    public static final ConfigKey PROCESS_EXIT_CODE = ConfigKeys
+        .key("geaflow.cluster.process.exit.code")
+        .defaultValue(-1)
+        .description("process exit code");
+
+    public static final ConfigKey CONTAINER_START_COMMAND_TEMPLATE = ConfigKeys
+        .key("geaflow.cluster.container.start.command.template")
+        .defaultValue("%java% %classpath% %jvmmem% %jvmopts% %logging% %class% %redirects%")
+        .description("container start command template");
+
 }

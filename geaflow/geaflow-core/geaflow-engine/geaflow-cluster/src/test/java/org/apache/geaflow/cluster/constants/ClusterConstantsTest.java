@@ -19,51 +19,72 @@
 
 package org.apache.geaflow.cluster.constants;
 
+import org.apache.geaflow.common.config.Configuration;
+import org.apache.geaflow.common.config.keys.ExecutionConfigKeys;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ClusterConstantsTest {
 
+    private Configuration createDefaultConfig() {
+        Configuration config = new Configuration();
+        config.put(ExecutionConfigKeys.MASTER_PREFIX, "master-");
+        config.put(ExecutionConfigKeys.DRIVER_PREFIX, "driver-");
+        config.put(ExecutionConfigKeys.CONTAINER_PREFIX, "container-");
+        config.put(ExecutionConfigKeys.MASTER_LOG_SUFFIX, "master.log");
+        config.put(ExecutionConfigKeys.DRIVER_LOG_SUFFIX, "driver.log");
+        config.put(ExecutionConfigKeys.CONTAINER_LOG_SUFFIX, "container.log");
+        config.put(ExecutionConfigKeys.DEFAULT_MASTER_ID, 0);
+        config.put(ExecutionConfigKeys.PROCESS_EXIT_CODE, -1);
+        config.put(ExecutionConfigKeys.CONTAINER_START_COMMAND_TEMPLATE, "%java% %classpath% %jvmmem% %jvmopts% %logging% %class% %redirects%");
+        return config;
+    }
+
     @Test
     public void testDefaultValues() {
+        Configuration config = createDefaultConfig();
         // Test default values
-        Assert.assertEquals(ClusterConstants.getMasterName(), "master-0");
-        Assert.assertEquals(ClusterConstants.getDriverName(1), "driver-1");
-        Assert.assertEquals(ClusterConstants.getContainerName(2), "container-2");
+        Assert.assertEquals(ClusterConstants.getMasterName(config), "master-0");
+        Assert.assertEquals(ClusterConstants.getDriverName(config, 1), "driver-1");
+        Assert.assertEquals(ClusterConstants.getContainerName(config, 2), "container-2");
         
-        Assert.assertEquals(ClusterConstants.MASTER_LOG_SUFFIX, "master.log");
-        Assert.assertEquals(ClusterConstants.DRIVER_LOG_SUFFIX, "driver.log");
-        Assert.assertEquals(ClusterConstants.CONTAINER_LOG_SUFFIX, "container.log");
+        Assert.assertEquals(ClusterConstants.getMasterLogSuffix(config), "master.log");
+        Assert.assertEquals(ClusterConstants.getDriverLogSuffix(config), "driver.log");
+        Assert.assertEquals(ClusterConstants.getContainerLogSuffix(config), "container.log");
         
-        Assert.assertEquals(ClusterConstants.DEFAULT_MASTER_ID, 0);
+        Assert.assertEquals(config.getInteger(ExecutionConfigKeys.DEFAULT_MASTER_ID), 0);
     }
 
     @Test
     public void testGetMasterName() {
-        String masterName = ClusterConstants.getMasterName();
+        Configuration config = createDefaultConfig();
+        String masterName = ClusterConstants.getMasterName(config);
         Assert.assertEquals(masterName, "master-0");
     }
 
     @Test
     public void testGetDriverName() {
-        Assert.assertEquals(ClusterConstants.getDriverName(0), "driver-0");
-        Assert.assertEquals(ClusterConstants.getDriverName(1), "driver-1");
-        Assert.assertEquals(ClusterConstants.getDriverName(10), "driver-10");
+        Configuration config = createDefaultConfig();
+        Assert.assertEquals(ClusterConstants.getDriverName(config, 0), "driver-0");
+        Assert.assertEquals(ClusterConstants.getDriverName(config, 1), "driver-1");
+        Assert.assertEquals(ClusterConstants.getDriverName(config, 10), "driver-10");
     }
 
     @Test
     public void testGetContainerName() {
-        Assert.assertEquals(ClusterConstants.getContainerName(0), "container-0");
-        Assert.assertEquals(ClusterConstants.getContainerName(1), "container-1");
-        Assert.assertEquals(ClusterConstants.getContainerName(100), "container-100");
+        Configuration config = createDefaultConfig();
+        Assert.assertEquals(ClusterConstants.getContainerName(config, 0), "container-0");
+        Assert.assertEquals(ClusterConstants.getContainerName(config, 1), "container-1");
+        Assert.assertEquals(ClusterConstants.getContainerName(config, 100), "container-100");
     }
 
     @Test
     public void testConstants() {
+        Configuration config = createDefaultConfig();
         // Test all constants are properly defined
-        Assert.assertNotNull(ClusterConstants.MASTER_LOG_SUFFIX);
-        Assert.assertNotNull(ClusterConstants.DRIVER_LOG_SUFFIX);
-        Assert.assertNotNull(ClusterConstants.CONTAINER_LOG_SUFFIX);
+        Assert.assertNotNull(ClusterConstants.getMasterLogSuffix(config));
+        Assert.assertNotNull(ClusterConstants.getDriverLogSuffix(config));
+        Assert.assertNotNull(ClusterConstants.getContainerLogSuffix(config));
         Assert.assertNotNull(ClusterConstants.CLUSTER_TYPE);
         Assert.assertNotNull(ClusterConstants.LOCAL_CLUSTER);
         Assert.assertNotNull(ClusterConstants.MASTER_ID);
@@ -71,4 +92,3 @@ public class ClusterConstantsTest {
         Assert.assertNotNull(ClusterConstants.CONTAINER_INDEX);
     }
 }
-

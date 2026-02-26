@@ -42,7 +42,7 @@ public class ContainerContext extends ReliableContainerContext {
     private transient List<IEvent> waitingCheckpointEvents;
 
     public ContainerContext(int id, Configuration config) {
-        super(id, ClusterConstants.getContainerName(id), config);
+        super(id, ClusterConstants.getContainerName(config, id), config);
         this.reliableEvents = new ArrayList<>();
         this.waitingCheckpointEvents = new ArrayList<>();
     }

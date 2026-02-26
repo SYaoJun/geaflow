@@ -67,7 +67,7 @@ public class Container extends AbstractContainer implements IContainer<IEvent, I
     public void init(ContainerContext containerContext) {
         try {
             this.containerContext = containerContext;
-            String containerName = ClusterConstants.getContainerName(containerContext.getId());
+            String containerName = ClusterConstants.getContainerName(containerContext.getConfig(), containerContext.getId());
             super.init(containerContext.getId(), containerName, containerContext.getConfig());
             registerToMaster();
             LOGGER.info("container {} init finish", name);

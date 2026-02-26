@@ -101,7 +101,7 @@ public abstract class AbstractClusterManager implements IClusterManager {
         for (int i = 0; i < containerNum; i++) {
             int containerId = generateNextComponentId();
             createNewContainer(containerId, false);
-            containerIds.put(containerId, ClusterConstants.getContainerName(containerId));
+            containerIds.put(containerId, ClusterConstants.getContainerName(config, containerId));
         }
         clusterContext.getContainerIds().putAll(containerIds);
     }
@@ -116,7 +116,7 @@ public abstract class AbstractClusterManager implements IClusterManager {
                 int driverId = generateNextComponentId();
                 driverFutureMap.put(driverId, new CompletableFuture<>());
                 createNewDriver(driverId, driverIndex);
-                driverIds.put(driverId, ClusterConstants.getDriverName(driverId));
+                driverIds.put(driverId, ClusterConstants.getDriverName(config, driverId));
             }
             clusterContext.getDriverIds().putAll(driverIds);
             doCheckpoint();

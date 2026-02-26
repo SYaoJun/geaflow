@@ -19,9 +19,9 @@
 
 package org.apache.geaflow.cluster.runner.failover;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.DEFAULT_MASTER_ID;
-import static org.apache.geaflow.cluster.constants.ClusterConstants.EXIT_CODE;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DEFAULT_MASTER_ID;
 import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.PROCESS_AUTO_RESTART;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.PROCESS_EXIT_CODE;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.geaflow.cluster.clustermanager.ClusterContext;
@@ -59,7 +59,7 @@ public class ClusterFailoverStrategy extends AbstractFailoverStrategy {
 
     @Override
     public void doFailover(int componentId, Throwable cause) {
-        boolean isMasterRestarts = (componentId == DEFAULT_MASTER_ID);
+        boolean isMasterRestarts = (componentId == context.getConfig().getInteger(DEFAULT_MASTER_ID));
         if (isMasterRestarts) {
             // Master restart itself when the process is started in recover mode.
             final long startTime = System.currentTimeMillis();
@@ -78,7 +78,7 @@ public class ClusterFailoverStrategy extends AbstractFailoverStrategy {
             // Close heartbeat check service.
             heartbeatManager.close();
             // Trigger process restart.
-            System.exit(EXIT_CODE);
+            System.exit(context.getConfig().getInteger(PROCESS_EXIT_CODE));
         }
     }
 

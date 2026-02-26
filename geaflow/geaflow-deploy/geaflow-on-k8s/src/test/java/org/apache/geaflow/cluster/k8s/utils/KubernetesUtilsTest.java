@@ -34,6 +34,7 @@ import org.apache.geaflow.cluster.k8s.config.KubernetesConfigKeys;
 import org.apache.geaflow.cluster.rpc.ConnectAddress;
 import org.apache.geaflow.cluster.runner.util.ClusterUtils;
 import org.apache.geaflow.common.config.Configuration;
+import org.apache.geaflow.common.config.keys.ExecutionConfigKeys;
 import org.apache.geaflow.common.utils.FileUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -101,9 +102,11 @@ public class KubernetesUtilsTest {
 
     @Test
     public void testAddressEncoding() {
+        Configuration config = new Configuration();
+        config.put(ExecutionConfigKeys.DRIVER_PREFIX, "driver-");
         Map<String, ConnectAddress> map = new HashMap<>();
         for (int i = 0; i < 3; i++) {
-            map.put(ClusterConstants.getDriverName(i), new ConnectAddress("127.0.0.1", 80));
+            map.put(ClusterConstants.getDriverName(config, i), new ConnectAddress("127.0.0.1", 80));
         }
         String encodedStr = KubernetesUtils.encodeRpcAddressMap(map);
         Map<String, ConnectAddress> map2 = KubernetesUtils.decodeRpcAddressMap(encodedStr);

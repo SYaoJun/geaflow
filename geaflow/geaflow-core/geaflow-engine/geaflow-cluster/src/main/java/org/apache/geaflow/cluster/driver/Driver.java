@@ -76,7 +76,7 @@ public class Driver extends AbstractContainer implements IDriver<IEvent, Boolean
 
     @Override
     public void init(DriverContext driverContext) {
-        super.init(driverContext.getId(), ClusterConstants.getDriverName(driverContext.getId()),
+        super.init(driverContext.getId(), ClusterConstants.getDriverName(driverContext.getConfig(), driverContext.getId()),
             driverContext.getConfig());
         this.driverContext = driverContext;
         this.eventDispatcher = new DriverEventDispatcher();

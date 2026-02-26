@@ -19,10 +19,7 @@
 
 package org.apache.geaflow.cluster.k8s.clustermanager;
 
-import static org.apache.geaflow.cluster.constants.ClusterConstants.CONTAINER_LOG_SUFFIX;
 import static org.apache.geaflow.cluster.constants.ClusterConstants.CONTAINER_START_COMMAND;
-import static org.apache.geaflow.cluster.constants.ClusterConstants.DEFAULT_MASTER_ID;
-import static org.apache.geaflow.cluster.constants.ClusterConstants.DRIVER_LOG_SUFFIX;
 import static org.apache.geaflow.cluster.k8s.config.K8SConstants.ENV_IS_RECOVER;
 import static org.apache.geaflow.cluster.k8s.config.K8SConstants.MASTER_ADDRESS;
 import static org.apache.geaflow.cluster.k8s.config.KubernetesConfigKeys.LOG_DIR;
@@ -30,6 +27,9 @@ import static org.apache.geaflow.cluster.k8s.config.KubernetesConfigKeys.NAME_SP
 import static org.apache.geaflow.cluster.k8s.config.KubernetesConfigKeys.SERVICE_EXPOSED_TYPE;
 import static org.apache.geaflow.cluster.k8s.config.KubernetesConfigKeys.SERVICE_SUFFIX;
 import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.CLUSTER_ID;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.CONTAINER_LOG_SUFFIX;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DEFAULT_MASTER_ID;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DRIVER_LOG_SUFFIX;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.fabric8.kubernetes.api.model.ConfigMap;
@@ -165,7 +165,7 @@ public class KubernetesClusterManager extends GeaFlowClusterManager {
         // 3. create replication controller.
         String masterDeployName = clusterId + K8SConstants.MASTER_RS_NAME_SUFFIX;
         Deployment deployment = KubernetesResourceBuilder.createDeployment(clusterId,
-            masterDeployName, String.valueOf(DEFAULT_MASTER_ID), container, configMap, masterParam,
+            masterDeployName, String.valueOf(config.getInteger(DEFAULT_MASTER_ID)), container, configMap, masterParam,
             dockerNetworkType);
 
         // 3. create the service.
@@ -195,7 +195,7 @@ public class KubernetesClusterManager extends GeaFlowClusterManager {
         Map<String, String> additionalEnvs = masterParam.getAdditionEnvs();
 
         String containerName = masterParam.getContainerName();
-        return KubernetesResourceBuilder.createContainer(containerName, String.valueOf(DEFAULT_MASTER_ID), masterId,
+        return KubernetesResourceBuilder.createContainer(containerName, String.valueOf(config.getInteger(DEFAULT_MASTER_ID)), masterId,
             masterParam, command, additionalEnvs, networkType);
     }
 
@@ -234,13 +234,13 @@ public class KubernetesClusterManager extends GeaFlowClusterManager {
         try {
             // Create container.
             String containerStartCommand = getContainerShellCommand(containerId, isRecover,
-                CONTAINER_LOG_SUFFIX);
+                config.getString(CONTAINER_LOG_SUFFIX));
             Map<String, String> additionalEnvs = containerParam.getAdditionEnvs();
             additionalEnvs.put(ENV_IS_RECOVER, String.valueOf(isRecover));
             additionalEnvs.put(CONTAINER_START_COMMAND, containerStartCommand);
 
             String podName = containerPodNamePrefix + containerId;
-            String startCommand = buildSupervisorStartCommand(CONTAINER_LOG_SUFFIX);
+            String startCommand = buildSupervisorStartCommand(config.getString(CONTAINER_LOG_SUFFIX));
             Container container = KubernetesResourceBuilder.createContainer(podName,
                 String.valueOf(containerId), masterId, containerParam, startCommand, additionalEnvs,
                 dockerNetworkType);
@@ -266,13 +266,13 @@ public class KubernetesClusterManager extends GeaFlowClusterManager {
         }
 
         // 1. Create container.
-        String driverStartCommand = getDriverShellCommand(driverId, driverIndex, DRIVER_LOG_SUFFIX);
+        String driverStartCommand = getDriverShellCommand(driverId, driverIndex, config.getString(DRIVER_LOG_SUFFIX));
         Map<String, String> additionalEnvs = driverParam.getAdditionEnvs();
         additionalEnvs.put(K8SConstants.ENV_CONTAINER_INDEX, String.valueOf(driverIndex));
         additionalEnvs.put(CONTAINER_START_COMMAND, driverStartCommand);
 
         String podName = driverPodNamePrefix + driverId;
-        String startCommand = buildSupervisorStartCommand(DRIVER_LOG_SUFFIX);
+        String startCommand = buildSupervisorStartCommand(config.getString(DRIVER_LOG_SUFFIX));
         Container container = KubernetesResourceBuilder.createContainer(podName,
             String.valueOf(driverId), masterId, driverParam, startCommand, additionalEnvs,
             dockerNetworkType);

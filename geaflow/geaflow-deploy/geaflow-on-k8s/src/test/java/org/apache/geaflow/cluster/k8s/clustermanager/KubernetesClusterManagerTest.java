@@ -22,7 +22,6 @@ package org.apache.geaflow.cluster.k8s.clustermanager;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
-import static org.apache.geaflow.cluster.constants.ClusterConstants.DEFAULT_MASTER_ID;
 import static org.apache.geaflow.cluster.k8s.config.K8SConstants.LABEL_COMPONENT_ID_KEY;
 import static org.apache.geaflow.cluster.k8s.config.K8SConstants.MASTER_RS_NAME_SUFFIX;
 import static org.apache.geaflow.cluster.k8s.config.K8SConstants.SERVICE_NAME_SUFFIX;
@@ -199,10 +198,11 @@ public class KubernetesClusterManagerTest {
     @Test(timeOut = 30000)
     public void testMasterUserLabels() {
         jobConf.put(POD_USER_LABELS.getKey(), "l1:test,l2:hello");
+        jobConf.put(ExecutionConfigKeys.DEFAULT_MASTER_ID, 0);
         Map<String, String> labels = new HashMap<>();
         labels.put("app", CLUSTER_ID);
         labels.put("component", MASTER_COMPONENT);
-        labels.put(LABEL_COMPONENT_ID_KEY, String.valueOf(DEFAULT_MASTER_ID));
+        labels.put(LABEL_COMPONENT_ID_KEY, String.valueOf(jobConf.getInteger(ExecutionConfigKeys.DEFAULT_MASTER_ID)));
         labels.putAll(KubernetesUtils.getPairsConf(jobConf, POD_USER_LABELS));
         assertEquals(5, labels.size());
         assertEquals("test", labels.get("l1"));

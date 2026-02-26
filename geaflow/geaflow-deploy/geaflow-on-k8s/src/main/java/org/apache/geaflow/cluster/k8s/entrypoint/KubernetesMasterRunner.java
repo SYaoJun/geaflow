@@ -20,9 +20,9 @@
 package org.apache.geaflow.cluster.k8s.entrypoint;
 
 import static org.apache.geaflow.cluster.constants.ClusterConstants.AGENT_PROFILER_PATH;
-import static org.apache.geaflow.cluster.constants.ClusterConstants.DEFAULT_MASTER_ID;
-import static org.apache.geaflow.cluster.constants.ClusterConstants.EXIT_CODE;
 import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.CLUSTER_ID;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.DEFAULT_MASTER_ID;
+import static org.apache.geaflow.common.config.keys.ExecutionConfigKeys.PROCESS_EXIT_CODE;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import java.util.HashMap;
@@ -80,7 +80,7 @@ public class KubernetesMasterRunner extends MasterRunner {
     @Override
     protected void initLeaderElectionService() {
         master.initLeaderElectionService(new KubernetesMasterLeaderContender(), config,
-            DEFAULT_MASTER_ID);
+            config.getInteger(DEFAULT_MASTER_ID));
         try {
             master.waitForLeaderElection();
         } catch (InterruptedException e) {
@@ -99,7 +99,7 @@ public class KubernetesMasterRunner extends MasterRunner {
         @Override
         public void handleLeadershipLost() {
             LOGGER.info("Leadership lost, exit the process now.");
-            System.exit(EXIT_CODE);
+            System.exit(config.getInteger(PROCESS_EXIT_CODE));
         }
 
         @Override
@@ -143,7 +143,7 @@ public class KubernetesMasterRunner extends MasterRunner {
             masterRunner.waitForTermination();
         } catch (Throwable e) {
             LOGGER.error("FATAL: process exits", e);
-            System.exit(EXIT_CODE);
+            System.exit(config.getInteger(PROCESS_EXIT_CODE));
         }
     }
 
