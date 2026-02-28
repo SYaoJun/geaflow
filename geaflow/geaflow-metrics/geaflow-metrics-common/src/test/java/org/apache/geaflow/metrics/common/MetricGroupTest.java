@@ -35,7 +35,7 @@ public class MetricGroupTest {
         MetricGroupImpl metricGroup = new MetricGroupImpl(registry);
 
         String gaugeName = "newGauge";
-        Gauge gauge = metricGroup.gauge(metricGroup.getMetricName(gaugeName));
+        Gauge<Double> gauge = metricGroup.gauge(metricGroup.getMetricName(gaugeName));
         gauge.setValue(1.0);
         Assert.assertEquals(gauge.getValue(), 1.0);
     }
