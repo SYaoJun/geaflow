@@ -56,7 +56,7 @@ public class GraphWriteBuffer<K, VV, EV> implements Serializable {
     }
 
     public void addEdges(List<IEdge<K, EV>> edges) {
-        if (edges == null || edges.size() == 0) {
+        if (edges == null || edges.isEmpty()) {
             return;
         }
         List<IEdge<K, EV>> list =

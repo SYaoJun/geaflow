@@ -150,7 +150,7 @@ public abstract class BaseJdbcStore implements IBaseStore {
 
     @Override
     public synchronized void close() {
-        if (!ds.isClosed()) {
+        if (ds != null && !ds.isClosed()) {
             ds.close();
         }
     }

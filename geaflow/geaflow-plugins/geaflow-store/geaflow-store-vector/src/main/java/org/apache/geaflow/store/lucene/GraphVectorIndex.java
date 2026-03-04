@@ -155,12 +155,21 @@ public class GraphVectorIndex<K> implements IVectorIndex<K> {
                 result = (K) value;
             } else if (keyClass == Long.class) {
                 Number value = firstDoc.getField(KEY_FIELD_NAME).numericValue();
+                if (value == null) {
+                    throw new IllegalArgumentException("Field " + KEY_FIELD_NAME + " has no numeric value");
+                }
                 result = (K) Long.valueOf(value.longValue());
             } else if (keyClass == Integer.class) {
                 Number value = firstDoc.getField(KEY_FIELD_NAME).numericValue();
+                if (value == null) {
+                    throw new IllegalArgumentException("Field " + KEY_FIELD_NAME + " has no numeric value");
+                }
                 result = (K) Integer.valueOf(value.intValue());
             } else if (keyClass == Float.class) {
                 Number value = firstDoc.getField(KEY_FIELD_NAME).numericValue();
+                if (value == null) {
+                    throw new IllegalArgumentException("Field " + KEY_FIELD_NAME + " has no numeric value");
+                }
                 result = (K) Float.valueOf(value.floatValue());
             } else {
                 throw new IllegalArgumentException("Unsupported key type: " + keyClass.getName());
