@@ -26,7 +26,7 @@ import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.tools.ValidationException;
 import org.apache.calcite.util.ImmutableNullableList;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.geaflow.dsl.util.SqlTypeUtil;
 
 /**

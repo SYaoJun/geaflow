@@ -33,7 +33,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.antgroup.tugraph</groupId>
+            <groupId>org.apache.calcite</groupId>
             <artifactId>calcite-core</artifactId>
         </dependency>
 

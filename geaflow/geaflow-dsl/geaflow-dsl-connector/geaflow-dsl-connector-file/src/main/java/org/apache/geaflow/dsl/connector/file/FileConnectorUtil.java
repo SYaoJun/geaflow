@@ -24,7 +24,7 @@ import static org.apache.geaflow.dsl.connector.file.FileConstants.PREFIX_S3_RESO
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.geaflow.common.config.Configuration;
 import org.apache.geaflow.common.exception.GeaflowRuntimeException;
 import org.apache.geaflow.common.utils.GsonUtil;

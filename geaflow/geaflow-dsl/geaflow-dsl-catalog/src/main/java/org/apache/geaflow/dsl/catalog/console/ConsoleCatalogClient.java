@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.geaflow.common.config.Configuration;
 import org.apache.geaflow.common.config.keys.DSLConfigKeys;
 import org.apache.geaflow.dsl.schema.GeaFlowFunction;

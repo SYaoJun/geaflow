@@ -437,14 +437,24 @@ data: {
                 "NEXT"
     ]
 
+    # List of non-reserved keywords to add;
+    # items in this list become non-reserved.
+    nonReservedKeywordsToAdd: [
+    ]
+
+    # List of non-reserved keywords to remove;
+    # items in this list become reserved.
+    nonReservedKeywordsToRemove: [
+    ]
+
     # List of additional join types. Each is a method with no arguments.
-    # Example: LeftSemiJoin()
+    # Example: "LeftSemiJoin".
     joinTypes: [
     ]
 
     # List of methods for parsing custom SQL statements.
     # Return type of method implementation should be 'SqlNode'.
-    # Example: SqlShowDatabases(), SqlShowTables().
+    # Example: "SqlShowDatabases()", "SqlShowTables()".
     statementParserMethods: [
         "SqlAlterGraph()",
         "SqlDescGraph()",
@@ -459,19 +469,26 @@ data: {
     ]
 
     # List of methods for parsing custom data types.
-    # Return type of method implementation should be "SqlIdentifier".
+    # Return type of method implementation should be "SqlTypeNameSpec".
     # Example: SqlParseTimeStampZ().
     dataTypeParserMethods: [
     ]
 
+    # List of methods for parsing builtin function calls.
+    # Return type of method implementation should be "SqlNode".
+    # Example: "DateTimeConstructorCall()".
+    builtinFunctionCallMethods: [
+    ]
+
     # List of methods for parsing extensions to "ALTER <scope>" calls.
     # Each must accept arguments "(SqlParserPos pos, String scope)".
-    # Example: "SqlUploadJarNode"
+    # Example: "SqlAlterTable".
     alterStatementParserMethods: [
     ]
 
     # List of methods for parsing extensions to "CREATE [OR REPLACE]" calls.
     # Each must accept arguments "(SqlParserPos pos, boolean replace)".
+    # Example: "SqlCreateForeignSchema".
     createStatementParserMethods: [
         "SqlCreateTable",
         "SqlCreateFunction",
@@ -481,24 +498,45 @@ data: {
 
     # List of methods for parsing extensions to "DROP" calls.
     # Each must accept arguments "(SqlParserPos pos)".
+    # Example: "SqlDropSchema".
     dropStatementParserMethods: [
        "SqlDropGraph"
     ]
 
+    # List of methods for parsing extensions to "TRUNCATE" calls.
+    # Each must accept arguments "(SqlParserPos pos)".
+    # Example: "SqlTruncate".
+    truncateStatementParserMethods: [
+    ]
+
+    # GeaFlow-specific: extend expressions
     extendExpressions: [
       "SqlVertexConstruct",
       "SqlEdgeConstruct",
       "SqlPathPatternSubQuery"
     ]
 
+    # GeaFlow-specific: extend leaf query parser methods
     extendLeafQueryParserMethods: [
         "GQLMatchStatement",
         "GQLGraphAlgorithmCall"
     ]
+
+    # Binary operators tokens.
+    # Example: "< INFIX_CAST: "::" >".
+    binaryOperatorsTokens: [
+    ]
+
+    # Binary operators initialization.
+    # Example: "InfixCast".
+    extraBinaryExpressions: [
+    ]
+
     # List of files in @includes directory that have parser method
     # implementations for parsing custom SQL statements, literals or types
     # given as part of "statementParserMethods", "literalParserMethods" or
     # "dataTypeParserMethods".
+    # Example: "parserImpls.ftl".
     implementationFiles: [
       "createView.ftl",
       "createTable.ftl",
@@ -514,10 +552,19 @@ data: {
       "expression.ftl"
     ]
 
+    # Custom identifier token.
+    # Example: "< IDENTIFIER: (<LETTER>|<DIGIT>)+ >".
+    customIdentifierToken: ""
+
+    # Method for parsing "SET [OR RESET]" calls.
+    setOptionParserMethod: "SqlSetOption"
+
+    includePosixOperators: false
     includeCompoundIdentifier: true
     includeBraces: true
     includeAdditionalDeclarations: false
-    enableDoubleQuote: true
+    includeParsingStringLiteralAsArrayLiteral: false
+    includeIntervalWithoutQualifier: false
   }
 }
 

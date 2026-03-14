@@ -143,8 +143,8 @@ SqlReturnStatement SqlReturn(SqlNode from) :
         |
         <ALL> { keywordList.add(GQLReturnKeyword.ALL.symbol(getPos())); }
     ]
-    selectList = SelectList()
-    groupBy = GroupByOpt()
+    selectList = ExpressionCommaList(s, ExprContext.ACCEPT_SUB_QUERY)
+    groupBy = GroupBy()
     [ orderBy = OrderBy(true) ]
     [
         // Postgres-style syntax. "LIMIT ... OFFSET ..."

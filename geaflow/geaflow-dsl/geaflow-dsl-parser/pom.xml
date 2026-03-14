@@ -90,7 +90,7 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>com.antgroup.tugraph</groupId>
+                                    <groupId>org.apache.calcite</groupId>
                                     <artifactId>calcite-core</artifactId>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>

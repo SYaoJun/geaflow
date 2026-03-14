@@ -21,7 +21,7 @@ package org.apache.geaflow.dsl.runtime.query.udtf;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.geaflow.dsl.common.function.Description;
 import org.apache.geaflow.dsl.common.function.UDTF;
 
