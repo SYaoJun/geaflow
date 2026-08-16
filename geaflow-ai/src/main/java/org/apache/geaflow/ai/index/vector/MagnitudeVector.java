@@ -30,6 +30,9 @@ public class MagnitudeVector implements IVector {
     }
 
     public MagnitudeVector(double magnitude) {
+        if (magnitude < 0.0) {
+            throw new IllegalArgumentException("magnitude must be non-negative, got: " + magnitude);
+        }
         this.magnitude = magnitude;
     }
 
@@ -40,14 +43,11 @@ public class MagnitudeVector implements IVector {
     @Override
     public double match(IVector other) {
         if (!(other instanceof MagnitudeVector)) {
-            throw new IllegalArgumentException("Other vector must be a MagnitudeVector");
+            return 0.0;
         }
-
         MagnitudeVector otherVec = (MagnitudeVector) other;
         double otherMagnitude = otherVec.magnitude;
-
         return computeSimilarity(otherMagnitude);
-       
     }
 
     private double computeSimilarity(double otherMagnitude) {
